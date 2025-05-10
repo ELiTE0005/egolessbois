@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGOLESS BOIS | Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --terminal-green: #00ff00;
+            --terminal-green-dark: #00aa00;
+            --terminal-green-glow: rgba(0, 255, 0, 0.2);
+            --terminal-header: #001800;
+            --terminal-border: #003300;
+            --terminal-box: rgba(0, 20, 0, 0.6);
+            --crt-overlay: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* CRT Screen Effects */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(0, 0, 0, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+        
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at center,
+                transparent 0%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
+            pointer-events: none;
+            z-index: 1001;
+            opacity: 0.4;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .terminal-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            padding-bottom: 80px;
+        }
+        
+        .terminal-scan {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--terminal-green-glow);
+            opacity: 0.7;
+            z-index: 999;
+            pointer-events: none;
+            animation: terminal-scan 8s linear infinite;
+        }
+        
+        @keyframes terminal-scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        /* Header Styles */
+        .terminal-header {
+            position: relative;
+            padding: 60px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--terminal-green-dark);
+        }
+        
+        .terminal-header::before {
+            content: "[SYS.INIT] Loading EGOLESS_BOIS.exe...";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+        }
+        
+        .terminal-header::after {
+            content: "STATUS: ONLINE | USERS: 7 | VERSION: 2.0.2.5";
+            position: absolute;
+            bottom: 15px;
+            right: 10px;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+        }
+        
+        .terminal-title {
+            font-family: 'VT323', monospace;
+            font-size: 8vw;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--terminal-green);
+            margin-bottom: 15px;
+            animation: flicker 4s infinite;
+            position: relative;
+        }
+        
+        @keyframes flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 0.99;
+                text-shadow: 0 0 15px var(--terminal-green), 0 0 30px var(--terminal-green-dark);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4;
+                text-shadow: none;
+            }
+        }
+        
+        .terminal-tagline {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .terminal-tagline::after {
+            content: "_";
+            animation: blink 1s infinite;
+            font-weight: bold;
+        }
+        
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        
+        .terminal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .terminal-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--terminal-green);
+            background-color: transparent;
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .terminal-btn::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: var(--terminal-green);
+            top: 0;
+            left: -100%;
+            transition: all 0.3s;
+            z-index: -1;
+        }
+        
+        .terminal-btn:hover {
+            color: var(--bg-color);
+        }
+        
+        .terminal-btn:hover::before {
+            left: 0;
+        }
+        
+        .terminal-btn.primary {
+            background-color: var(--terminal-green);
+            color: var(--bg-color);
+        }
+        
+        .terminal-btn.primary::before {
+            background-color: var(--bg-color);
+        }
+        
+        .terminal-btn.primary:hover {
+            color: var(--terminal-green);
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: var(--terminal-header);
+            border-top: 1px solid var(--terminal-border);
+            border-bottom: 1px solid var(--terminal-border);
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .navbar::before {
+            content: "> SYSTEM.NAV";
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+        }
+        
+        .logo {
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            text-decoration: none;
+            color: var(--terminal-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-left: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo::before {
+            content: ">";
+            margin-right: 10px;
+            animation: blink 1s infinite;
+        }
+        
+        .logo span {
+            color: var(--terminal-green);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin-right: 20px;
+        }
+        
+        .nav-links li {
+            margin-left: 25px;
+            position: relative;
+        }
+        
+        .nav-links a {
+            color: var(--terminal-green);
+            text-decoration: none;
+            font-size: 16px;
+            text-transform: uppercase;
+            padding: 5px 10px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .nav-links a:hover {
+            border: 1px solid var(--terminal-green);
+            box-shadow: 0 0 10px var(--terminal-green-glow);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--terminal-green);
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        
+        /* Hide mobile navigation completely on desktop */
+        .mobile-nav {
+            display: none;
+        }
+        
+        /* Section Styles */
+        .terminal-section {
+            margin: 80px 0;
+            position: relative;
+        }
+        
+        .section-header {
+            position: relative;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-family: 'VT323', monospace;
+            font-size: 36px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            display: inline-block;
+            border-bottom: 2px solid var(--terminal-green);
+            box-shadow: 0 5px 15px var(--terminal-green-glow);
+        }
+        
+        .section-header::before {
+            content: ">";
+            margin-right: 10px;
+            animation: blink 2s infinite;
+        }
+        
+        .section-header::after {
+            content: attr(data-command);
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+        }
+        
+        /* Squad Section Styles */
+        .squad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .terminal-card {
+            background-color: var(--terminal-box);
+            border: 1px solid var(--terminal-border);
+            border-radius: 5px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        
+        .terminal-card::before {
+            content: attr(data-id);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+            opacity: 0.7;
+        }
+        
+        .terminal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 20px var(--terminal-green-glow);
+        }
+        
+        .card-header {
+            border-bottom: 1px solid var(--terminal-green-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            position: relative;
+        }
+        
+        .card-header::before {
+            content: "* USER FILE *";
+            position: absolute;
+            top: -5px;
+            left: 0;
+            font-size: 10px;
+            color: var(--terminal-green-dark);
+        }
+        
+        .friend-name {
+            font-family: 'VT323', monospace;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .friend-role {
+            display: inline-block;
+            background-color: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--terminal-green-dark);
+            padding: 2px 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .friend-avatar {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 20px;
+            border: 1px solid var(--terminal-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .friend-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.5) sepia(0.2) hue-rotate(55deg) brightness(0.8) contrast(1.2);
+            transition: all 0.5s;
+        }
+        
+        .terminal-card:hover .friend-avatar img {
+            filter: grayscale(0) sepia(0.1) hue-rotate(55deg) brightness(1) contrast(1.1);
+            transform: scale(1.05);
+        }
+        
+        .friend-avatar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(0, 20, 0, 0.7) 100%
+            );
+        }
+        
+        .friend-avatar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 1px,
+                rgba(0, 255, 0, 0.05) 1px,
+                rgba(0, 255, 0, 0.05) 2px
+            );
+            pointer-events: none;
+        }
+        
+        .friend-bio {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(0, 255, 0, 0.8);
+        }
+        
+        .friend-bio::before {
+            content: "> BIO: ";
+            color: var(--terminal-green);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .social-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--terminal-green-dark);
+            background-color: rgba(0, 255, 0, 0.05);
+            color: var(--terminal-green);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .social-btn:hover {
+            background-color: var(--terminal-green);
+            color: var(--bg-color);
+            box-shadow: 0 0 10px var(--terminal-green-glow);
+        }
+        
+        /* About Section Styles */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        
+        .terminal-screen {
+            background-color: var(--terminal-box);
+            border: 1px solid var(--terminal-border);
+            border-radius: 5px;
+            padding: 20px;
+            position: relative;
+            height: 100%;
+            min-height: 350px;
+        }
+        
+        .terminal-screen::before {
+            content: "egoless@bois:~$ cat story.txt";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 14px;
+            color: var(--terminal-green);
+        }
+        
+        .terminal-text {
+            margin-top: 40px;
+            max-height: 300px;
+            overflow: auto;
+            padding-right: 10px;
+        }
+        
+        .terminal-text p {
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .terminal-text p::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: var(--terminal-green-dark);
+        }
+        
+        .highlight {
+            color: #ffffff;
+            background-color: rgba(0, 255, 0, 0.2);
+            padding: 0 5px;
+        }
+        
+        .typewriter-effect {
+            overflow: hidden;
+            border-right: 2px solid var(--terminal-green);
+            white-space: nowrap;
+            margin: 0;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+            display: inline-block;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--terminal-green) }
+        }
+        
+        .terminal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .stat-box {
+            background-color: var(--terminal-box);
+            border: 1px solid var(--terminal-border);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px var(--terminal-green-glow);
+        }
+        
+        .stat-number {
+            font-family: 'VT323', monospace;
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--terminal-green);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(0, 255, 0, 0.8);
+        }
+        
+        /* Gallery Section Styles */
+        .gallery-container {
+            margin-top: 40px;
+        }
+        
+        .gallery-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background-color: var(--terminal-box);
+            border: 1px solid var(--terminal-border);
+            color: var(--terminal-green);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--terminal-green);
+            color: var(--bg-color);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            grid-auto-rows: 200px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--terminal-border);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(0.7) sepia(0.2) hue-rotate(55deg) brightness(0.7) contrast(1.2);
+            transition: all 0.3s;
+        }
+        
+        .gallery-item:hover img {
+            filter: grayscale(0) sepia(0.1) hue-rotate(55deg) brightness(0.9) contrast(1.1);
+            transform: scale(1.1);
+        }
+        
+        .gallery-item::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(0, 255, 0, 0),
+                rgba(0, 255, 0, 0) 5px,
+                rgba(0, 255, 0, 0.05) 5px,
+                rgba(0, 255, 0, 0.05) 10px
+            );
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        
+        .gallery-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        
+        .gallery-item:nth-child(4) {
+            grid-column: span 2;
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(0, 20, 0, 0.8);
+            color: var(--terminal-green);
+            transform: translateY(100%);
+            transition: all 0.3s;
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+        
+        /* Contact Section Styles */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .contact-info {
+            background-color: var(--terminal-box);
+            border: 1px solid var(--terminal-border);
+            border-radius: 5px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .contact-info::before {
+            content: "> CONTACT.INFO";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+        }
+        
+        .contact-title {
+            font-family: 'VT323', monospace;
+            font-size: 28px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--terminal-green-dark);
+        }
+        
+        .contact-text {
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .contact-list {
+            list-style: none;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .contact-icon {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            border: 1px solid var(--terminal-border);
+            color: var(--terminal-green);
+        }
+        
+        .contact-item p {
+            margin-bottom: 0;
+        }
+        
+        .contact-form {
+            background-color: var(--terminal-box);
+            border: 1px solid var(--terminal-border);
+            border-radius: 5px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .contact-form::before {
+            content: "> CONTACT.FORM";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--terminal-border);
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+        }
+        
+        .form-control::placeholder {
+            color: rgba(0, 255, 0, 0.5);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--terminal-green);
+            box-shadow: 0 0 10px var(--terminal-green-glow);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--terminal-green);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Footer Styles */
+        .terminal-footer {
+            background-color: var(--terminal-header);
+            border-top: 1px solid var(--terminal-border);
+            padding: 30px 0 20px;
+            margin-top: 100px;
+            position: relative;
+        }
+        
+        .terminal-footer::before {
+            content: "> SYSTEM.FOOTER";
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 12px;
+            color: var(--terminal-green-dark);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-col h4 {
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--terminal-green-dark);
+        }
+        
+        .footer-text {
+            margin-bottom: 20px;
+            line-height: 1.7;
+            color: rgba(0, 255, 0, 0.8);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: rgba(0, 255, 0, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: block;
+        }
+        
+        .footer-links a::before {
+            content: ">";
+            margin-right: 10px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--terminal-green);
+            padding-left: 10px;
+        }
+        
+        .footer-links a:hover::before {
+            opacity: 1;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid var(--terminal-border);
+            padding-top: 20px;
+            text-align: center;
+            color: rgba(0, 255, 0, 0.6);
+            font-size: 14px;
+        }
+        
+        .footer-bottom p {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-bottom p::after {
+            content: "_";
+            animation: blink 1s infinite;
+        }
+        
+        /* Matrix background effect */
+        .matrix-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.04;
+        }
+        
+        /* Noise effect */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.05;
+            z-index: 1002;
+        }
+        
+        /* Command-line cursor animation */
+        .cursor::after {
+            content: "_";
+            animation: blink 1s infinite;
+        }
+        
+        /* ASCII Art */
+        .ascii-art {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 1.2;
+            color: var(--terminal-green);
+            margin: 20px 0;
+            max-width: 100%;
+            overflow: auto;
+            font-size: 12px;
+        }
+        
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--terminal-box);
+            border: 1px solid var(--terminal-border);
+            color: var(--terminal-green);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .scroll-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-top:hover {
+            background-color: var(--terminal-green);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--terminal-green-glow);
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .about-grid, .contact-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .terminal-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .gallery-item:nth-child(1),
+            .gallery-item:nth-child(4) {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .terminal-title {
+                font-size: 12vw;
+            }
+            
+            .terminal-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .terminal-btn {
+                width: 200px;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            /* Only show mobile navigation structure on mobile, but keep it off-screen until activated */
+            .mobile-nav {
+                display: block;
+                position: fixed;
+                top: 0;
+                right: -300px; /* Initially off-screen */
+                width: 300px;
+                height: 100vh;
+                background-color: var(--terminal-header);
+                border-left: 1px solid var(--terminal-border);
+                z-index: 1000;
+                transition: all 0.3s;
+                padding: 50px 20px 20px;
+            }
+            
+            .mobile-nav.active {
+                right: 0; /* Slide in when active */
+                box-shadow: -5px 0 15px rgba(0, 255, 0, 0.1);
+            }
+            
+            .mobile-nav-close {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: none;
+                border: none;
+                color: var(--terminal-green);
+                font-size: 24px;
+                cursor: pointer;
+            }
+            
+            .mobile-links {
+                list-style: none;
+            }
+            
+            .mobile-links li {
+                margin-bottom: 15px;
+            }
+            
+            .mobile-links a {
+                color: var(--terminal-green);
+                text-decoration: none;
+                font-size: 18px;
+                display: block;
+                padding: 8px 0;
+                transition: all 0.3s;
+                border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+            }
+            
+            .mobile-links a:hover {
+                color: #ffffff;
+                padding-left: 10px;
+            }
+            
+            .terminal-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .friend-name {
+                font-size: 24px;
+            }
+            
+            .terminal-header {
+                padding: 40px 0;
+            }
+            
+            .terminal-header::before,
+            .terminal-header::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="terminal-scan"></div>
+        <div class="noise"></div>
+        <canvas class="matrix-background" id="matrix"></canvas>
+        
+        <header class="terminal-header">
+            <div class="container">
+                <h1 class="terminal-title">EGOLESS BOIS</h1>
+                <p class="terminal-tagline">Friends who stay together, slay together</p>
+                
+                <div class="terminal-buttons">
+                    <a href="#squad" class="terminal-btn primary">Meet The Squad</a>
+                    <a href="#contact" class="terminal-btn">Join Us</a>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="navbar">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="#" class="logo">EGOLESS<span>BOIS</span></a>
+                <ul class="nav-links">
+                    <li><a href="#squad">The Squad</a></li>
+                    <li><a href="#story">Our Story</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <div class="mobile-nav">
+            <button class="mobile-nav-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <ul class="mobile-links">
+                <li><a href="#squad">The Squad</a></li>
+                <li><a href="#story">Our Story</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+        
+        <main>
+            <section id="squad" class="terminal-section">
+                <div class="container">
+                    <div class="section-header" data-command="SYS.COMMAND: load_squad.exe">
+                        <h2 class="section-title">Meet The Squad</h2>
+                    </div>
+                    
+                    <div class="squad-grid">
+                        <!-- Rajbir -->
+                        <div class="terminal-card" data-id="USER_ID: RBR_001">
+                            <div class="card-header">
+                                <h3 class="friend-name">Rajbir</h3>
+                                <span class="friend-role">The Tech Geek</span>
+                            </div>
+                            
+                            <div class="friend-avatar">
+                                <img src="https://source.unsplash.com/random/600x800/?portrait,man" alt="Rajbir">
+                            </div>
+                            
+                            <p class="friend-bio">The problem solver of the group. Rajbir's technical knowledge and logical thinking get the squad out of tricky situations. Always ready with smart solutions.</p>
+                            
+                            <div class="social-links">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Mrinmoy -->
+                        <div class="terminal-card" data-id="USER_ID: MRN_002">
+                            <div class="card-header">
+                                <h3 class="friend-name">Mrinmoy</h3>
+                                <span class="friend-role">The Creative One</span>
+                            </div>
+                            
+                            <div class="friend-avatar">
+                                <img src="https://source.unsplash.com/random/600x800/?portrait,creative" alt="Mrinmoy">
+                            </div>
+                            
+                            <p class="friend-bio">With an eye for art and a mind full of ideas, Mrinmoy brings creativity to everything the squad does. His unique perspective transforms ordinary moments into memories.</p>
+                            
+                            <div class="social-links">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-behance"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Piyak -->
+                        <div class="terminal-card" data-id="USER_ID: PYK_003">
+                            <div class="card-header">
+                                <h3 class="friend-name">Piyak</h3>
+                                <span class="friend-role">The Life of the Party</span>
+                            </div>
+                            
+                            <div class="friend-avatar">
+                                <img src="https://source.unsplash.com/random/600x800/?portrait,fun" alt="Piyak">
+                            </div>
+                            
+                            <p class="friend-bio">Never a dull moment when Piyak is around. His humor and energy light up every gathering. The one who turns ordinary hangouts into unforgettable adventures.</p>
+                            
+                            <div class="social-links">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Amit -->
+                        <div class="terminal-card" data-id="USER_ID: AMT_004">
+                            <div class="card-header">
+                                <h3 class="friend-name">Amit</h3>
+                                <span class="friend-role">The Mastermind</span>
+                            </div>
+                            
+                            <div class="friend-avatar">
+                                <img src="https://source.unsplash.com/random/600x800/?portrait,tech" alt="Amit">
+                            </div>
+                            
+                            <p class="friend-bio">Always coming up with the next big plan. Amit keeps the group energy high and the vibes positive. Known for his strategic thinking and leadership skills.</p>
+                            
+                            <div class="social-links">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Indranil -->
+                        <div class="terminal-card" data-id="USER_ID: IND_005">
+                            <div class="card-header">
+                                <h3 class="friend-name">Indranil</h3>
+                                <span class="friend-role">The Heart</span>
+                            </div>
+                            
+                            <div class="friend-avatar">
+                                <img src="https://source.unsplash.com/random/600x800/?portrait,sports" alt="Indranil">
+                            </div>
+                            
+                            <p class="friend-bio">The heart of the squad. Indranil's empathy and genuine care create a safe space for everyone to be themselves. His thoughtful advice and unwavering support keep the group grounded during challenging times and celebrating during the good ones.</p>
+                            
+                            <div class="social-links">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-strava"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="terminal-card" data-id="USER_ID: DBG_006">
+                            <div class="card-header">
+                                <h3 class="friend-name">Debargha</h3>
+                                <span class="friend-role">The Busy Mf</span>
+                            </div>
+                            
+                            <div class="friend-avatar">
+                                <img src="https://source.unsplash.com/random/600x800/?portrait,sports" alt="Debargha">
+                            </div>
+                            
+                            <p class="friend-bio">The visionary of the crew with ambitious dreams and strategic mindset push everyone to reach their full potential. His ability to see opportunities where others see obstacles transforms casual conversations into exciting new ventures and adventures.</p>
+                            
+                            <div class="social-links">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-strava"></i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="terminal-card" data-id="USER_ID: TBK_007">
+                            <div class="card-header">
+                                <h3 class="friend-name">Tribankur</h3>
+                                <span class="friend-role">The Nigga of the squad</span>
+                            </div>
+                            
+                            <div class="friend-avatar">
+                                <img src="https://source.unsplash.com/random/600x800/?portrait,sports" alt="Tribankur">
+                            </div>
+                            
+                            <p class="friend-bio">The soul connector of the group. Bankur's natural charisma and genuine curiosity make everyone feel valued and understood. His gift for asking the right questions and truly listening helps turn a collection of individuals into a tight-knit family that grows stronger with each shared experience.</p>
+                            
+                            <div class="social-links">
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-btn">
+                                    <i class="fab fa-strava"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <a href="#contact" class="terminal-btn">Join The Squad <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></a>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="story" class="terminal-section">
+                <div class="container">
+                    <div class="section-header" data-command="SYS.COMMAND: cat story.txt">
+                        <h2 class="section-title">Our Story</h2>
+                    </div>
+                    
+                    <div class="about-grid">
+                        <div class="terminal-screen">
+                            <div class="terminal-text">
+                                <p>It all started in <span class="highlight">2015</span> when seven strangers met at school. What began as a casual conversation over shared interests quickly evolved into a deep friendship that has stood the test of time.</p>
+                                
+                                <p>The name <span class="highlight">Egoless Bois</span> came from our core philosophy - putting friendship above personal egos. We've supported each other through thick and thin, celebrating successes and overcoming challenges together.</p>
+                                
+                                <p>From road trips across the country to late-night gaming sessions, our adventures have shaped us into a tight-knit group that values loyalty, fun, and authenticity above all else.</p>
+                                
+                                <div class="ascii-art">
+    ███████╗ ██████╗  ██████╗ ██╗     ███████╗███████╗███████╗
+    ██╔════╝██╔════╝ ██╔═══██╗██║     ██╔════╝██╔════╝██╔════╝
+    █████╗  ██║  ███╗██║   ██║██║     █████╗  ███████╗███████╗
+    ██╔══╝  ██║   ██║██║   ██║██║     ██╔══╝  ╚════██║╚════██║
+    ███████╗╚██████╔╝╚██████╔╝███████╗███████╗███████║███████║
+    ╚══════╝ ╚═════╝  ╚═════╝ ╚══════╝╚══════╝╚══════╝╚══════╝
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 style="font-family: 'VT323', monospace; font-size: 28px; margin-bottom: 20px;">How We Became The Egoless Bois</h3>
+                            
+                            <div class="typewriter-effect" style="width: 100%;">
+                                Initializing friendship protocol...
+                            </div>
+                            
+                            <p style="margin-top: 30px; margin-bottom: 20px;">Our journey together has been filled with countless memorable experiences. The name "Egoless Bois" represents our commitment to supporting each other without letting personal egos get in the way.</p>
+                            
+                            <p>Through late-night study sessions, road trips, gaming marathons, and life challenges, we've built a brotherhood that transcends ordinary friendship.</p>
+                            
+                            <div class="terminal-stats">
+                                <div class="stat-box">
+                                    <div class="stat-number">10+</div>
+                                    <div class="stat-label">Years Together</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">12</div>
+                                    <div class="stat-label">Road Trips</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">∞</div>
+                                    <div class="stat-label">Memories</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="gallery" class="terminal-section">
+                <div class="container">
+                    <div class="section-header" data-command="SYS.COMMAND: display gallery.img">
+                        <h2 class="section-title">Our Adventures</h2>
+                    </div>
+                    
+                    <div class="gallery-container">
+                        <div class="gallery-filter">
+                            <button class="filter-btn active">All Memories</button>
+                            <button class="filter-btn">Road Trips</button>
+                            <button class="filter-btn">Camping</button>
+                            <button class="filter-btn">Celebrations</button>
+                        </div>
+                        
+                        <div class="gallery-grid">
+                            <div class="gallery-item">
+                                <img src="https://source.unsplash.com/random/800x800/?friends,roadtrip" alt="Gallery Image">
+                                <div class="gallery-caption">
+                                    <h4>Mountain Roadtrip 2023</h4>
+                                </div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://source.unsplash.com/random/500x500/?camping" alt="Gallery Image">
+                                <div class="gallery-caption">
+                                    <h4>Night Camping</h4>
+                                </div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://source.unsplash.com/random/500x500/?beach,friends" alt="Gallery Image">
+                                <div class="gallery-caption">
+                                    <h4>Beach Day</h4>
+                                </div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://source.unsplash.com/random/800x400/?party,friends" alt="Gallery Image">
+                                <div class="gallery-caption">
+                                    <h4>Birthday Celebration</h4>
+                                </div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://source.unsplash.com/random/500x500/?concert" alt="Gallery Image">
+                                <div class="gallery-caption">
+                                    <h4>Concert Night</h4>
+                                </div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://source.unsplash.com/random/500x500/?hiking,adventure" alt="Gallery Image">
+                                <div class="gallery-caption">
+                                    <h4>Hiking Adventure</h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 40px;">
+                            <button class="terminal-btn">Load More Memories...</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="contact" class="terminal-section">
+                <div class="container">
+                    <div class="section-header" data-command="SYS.COMMAND: open contact.exe">
+                        <h2 class="section-title">Get In Touch</h2>
+                    </div>
+                    
+                    <div class="contact-grid">
+                        <div class="contact-info">
+                            <h3 class="contact-title">Let's Connect</h3>
+                            <p class="contact-text">Whether you want to join our adventures, collaborate on a project, or just say hi, we'd love to hear from you. The Egoless Bois are always open to making new friends!</p>
+                            
+                            <ul class="contact-list">
+                                <li class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Location</h4>
+                                        <p>New Delhi, India</p>
+                                    </div>
+                                </li>
+                                <li class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Email</h4>
+                                        <p>hello@egolessbois.com</p>
+                                    </div>
+                                </li>
+                                <li class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Phone</h4>
+                                        <p>+91 1234567890</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="contact-form">
+                            <h3 class="contact-title">Send Message</h3>
+                            <form>
+                                <div class="form-group">
+                                    <label for="name" class="form-label">> Name:</label>
+                                    <input type="text" id="name" class="form-control" placeholder="Enter your name">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email" class="form-label">> Email:</label>
+                                    <input type="email" id="email" class="form-control" placeholder="Enter your email">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="subject" class="form-label">> Subject:</label>
+                                    <input type="text" id="subject" class="form-control" placeholder="Enter subject">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="message" class="form-label">> Message:</label>
+                                    <textarea id="message" class="form-control" placeholder="Enter your message"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="terminal-btn primary" style="width: 100%;">
+                                    SEND MESSAGE
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="terminal-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>About Egoless Bois</h4>
+                        <p class="footer-text">A group of friends dedicated to adventure, friendship, and creating lasting memories together. Join us in our journey of fun and camaraderie.</p>
+                        <div class="social-links">
+                            <a href="#" class="social-btn">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-btn">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-btn">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-btn">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-col">
+                        <h4>Quick Links</h4>
+                        <ul class="footer-links">
+                            <li><a href="#squad">The Squad</a></li>
+                            <li><a href="#story">Our Story</a></li>
+                            <li><a href="#gallery">Gallery</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-col">
+                        <h4>Our Activities</h4>
+                        <ul class="footer-links">
+                            <li><a href="#">Road Trips</a></li>
+                            <li><a href="#">Camping</a></li>
+                            <li><a href="#">Gaming Nights</a></li>
+                            <li><a href="#">Music Festivals</a></li>
+                            <li><a href="#">Food Adventures</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p>© 2025 Egoless Bois. All Rights Reserved. Designed with binary love.</p>
+                </div>
+            </div>
+        </footer>
+        
+        <div class="scroll-top">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+    </div>
+    
+    <script>
+        // Matrix rain effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%$#@!~";
+        const matrixChars = matrix.split("");
+        
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        
+        const drops = [];
+        for(let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "#00FF00";
+            ctx.font = fontSize + "px monospace";
+            
+            for(let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 35);
+        
+        // Resize canvas when window is resized
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Add static noise effect
+        function createNoise() {
+            const noise = document.querySelector('.noise');
+            let html = '';
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const size = Math.random() * 3;
+                html += `<div style="position:absolute; width:${size}px; height:${size}px; top:${y}%; left:${x}%; background-color:#00ff00; border-radius:50%; box-shadow:0 0 5px #00ff00;"></div>`;
+            }
+            noise.innerHTML = html;
+        }
+        
+        createNoise();
+        setInterval(createNoise, 5000);
+        
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenu = document.querySelector('.mobile-nav');
+        const mobileMenuClose = document.querySelector('.mobile-nav-close');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.add('active');
+        });
+        
+        mobileMenuClose.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+        });
+        
+        // Gallery filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    mobileMenu.classList.remove('active');
+                }
+            });
+        });
+        
+        // Show/hide scroll to top button
+        window.addEventListener('scroll', function() {
+            const scrollTop = document.querySelector('.scroll-top');
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('show');
+            } else {
+                scrollTop.classList.remove('show');
+            }
+        });
+        
+        // Scroll to top functionality
+        document.querySelector('.scroll-top').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
